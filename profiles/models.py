@@ -23,6 +23,7 @@ class Profile(models.Model):
   owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
   name = models.CharField(max_length=35)
   bio = models.TextField(blank=True)
+  email = models.EmailField(blank=True)
   image = models.ImageField(upload_to="images/", default="images/default.jpg")
   followers = models.ManyToManyField(
       User, related_name="followed_profiles", blank=True
