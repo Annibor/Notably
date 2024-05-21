@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     'cloudinary',
+
+    'profiles',
 ]
 
 MIDDLEWARE = [
