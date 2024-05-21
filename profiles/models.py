@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 
-#Based on Code Institutes walkthrough project: Moments.
+# Profile & create_profile are Based on Code Institutes walkthrough project: Moments.
 
 class Profile(models.Model):
   """
@@ -33,3 +34,15 @@ class Profile(models.Model):
 
   def __str__(self):
     return f"{self.owner.username}'s Profile"
+  
+
+def create_profile(sender, instance, created, **kwargs):
+  """
+  Creates a Profile for each new User created.
+  """
+  if created:
+    Profile.objects.create(owner=instance, name=instance.username)
+    
+
+# Connects the create_profile function to the User model's post_save signal.
+models.signals.post_save.connect(create_profile, sender=User)
