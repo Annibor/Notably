@@ -1,27 +1,35 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 
-"Based on https://www.youtube.com/watch?v=BTdcjOzfwCA User & profile model."
-class User(AbstractUser):
+#Based on Code Institutes walkthrough project: Moments.
+
+class Profile(models.Model):
   """
-  Custom User model where email is the primary identifier for authentication
-  instead of the username. The username is still used and required upon registration,
-  but users log in using their email address.
+  Extends the base User model to store additional personal information about users.
 
   Attributes:
-    username (models.CharField): The user's username, unique, used for identification.
-    email (models.EmailField): The user's email address, unique, used for logging in.
-    
-  Constants:
-    USERNAME_FIELD (str): Specifies the name of the field on the user model that is used as the unique identifier.
-    REQUIRED_FIELDS (list): Specifies the names of the fields that will be prompted for when creating a user viat createsuperuser management command.
-   """
+    owner (OneToOneField): A one-to-one link to Django's built-in User model, ensuring
+        that each user has one associated profile.
+    name (CharField): The name of the profile, derived initially from the username of the user.
+    bio (TextField): Additional content or description about the user, optional.
+    image (ImageField): A profile image, with a default image if none is uploaded.
+    followers (ManyToManyField): A many-to-many relationship allowing users to follow each other.
 
-  username = models.CharField(max_length=255, unique=True)
-  email = models.EmailField(unique=True)
+  Meta:
+    ordering: ['-created_at']  # Orders profiles by their creation date, descending.
+  """
 
-  USERNAME_FIELD = 'email'
-  REQUIRED_FIELDS = ['username']
+  owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+  name = models.CharField(max_length=35)
+  bio = models.TextField(blank=True)
+  image = models.ImageField(upload_to="images/", default="images/default.jpg")
+  followers = models.ManyToManyField(
+      User, related_name="followed_profiles", blank=True
+  )
+  
+  class Meta:
+    verbose_name = 'User Profile'
+    verbose_name_plural = 'User Profiles'
 
   def __str__(self):
-    return self.email
+    return f"{self.owner.username}'s Profile"
