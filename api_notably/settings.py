@@ -34,6 +34,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
+    '.herokuapp.com',
 ]
 
 
@@ -162,4 +163,5 @@ if 'CLIENT_ORIGIN' in os.environ:
 else:
     CORS_ALLOWED_ORIGIN_REGEXES = [
       r"^http://127.0.0.1:8000$",
+      r"^https://*.herokuapp.com$",
     ]
